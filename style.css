@@ -5,6 +5,13 @@
   margin: 0;
 }
 
+button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
 body {
   height: 100vh;
   display: flex;
@@ -28,10 +35,6 @@ body {
     padding: 0 24px;
     display: flex;
     align-items: center;
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
   }
 
   #title {
@@ -74,8 +77,6 @@ body {
       display: flex;
       align-items: center;
       font-size: 12px;
-      background: none;
-      border: none;
       border-radius: 10px;
       user-select: none;
     }
@@ -90,8 +91,6 @@ body {
 
     #upload-button {
       font-size: 14px;
-      color: white;
-      cursor: pointer;
     }
 
     #upload-button:active {
