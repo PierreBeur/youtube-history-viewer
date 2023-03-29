@@ -106,3 +106,16 @@ body {
     .list-item > .dates {
       flex: 1;
     }
+
+    .list-item-delete {
+      height: 100%;
+      display: none;
+    }
+
+    .list-item:hover > .list-item-delete {
+      display: block;
+    }
+
+    .list-item-delete:hover {
+      background: #3d3d3d;
+    }

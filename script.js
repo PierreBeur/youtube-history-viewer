@@ -2,6 +2,36 @@ const watchHistory = [];
 
 const list = document.querySelector('#list');
 const listItemTemplate = document.querySelector('#list-item-template');
+function updateList() {
+  // Clear list
+  list.textContent = '';
+  // Add entries to list
+  for (const entry of watchHistory) {
+    const listItem = listItemTemplate.content.cloneNode(true);
+    // Set dates
+    const newestDate = new Date(entry[0].time);
+    const oldestDate = new Date(entry[entry.length - 1].time);
+    const newestDateString = newestDate.toDateString();
+    const oldestDateString = oldestDate.toDateString();
+    listItem.querySelector('.newest-date').innerText = newestDateString;
+    listItem.querySelector('.oldest-date').innerText = oldestDateString;
+    // Have delete button delete entry on click
+    const deleteButton = listItem.querySelector('.list-item-delete');
+    deleteButton.addEventListener('click', () => {
+      // Get confirmation from user
+      const confirmString = `${newestDateString} - ${oldestDateString}\n` +
+                            'Are you sure you want to permanently delete this entry?';
+      if (confirm(confirmString)) {
+        // Remove entry from watch history
+        watchHistory.splice(watchHistory.indexOf(entry), 1);
+        updateList();
+      }
+    });
+    // Add entry to list
+    list.appendChild(listItem);
+  }
+}
+
 function updateWatchHistory(json) {
   // Add entry to watch history
   watchHistory.push(json);
@@ -17,19 +47,7 @@ function updateWatchHistory(json) {
     if (aOldestDate < bOldestDate) return 1;
     return 0;
   });
-  // Clear list
-  list.textContent = '';
-  // Add entries to list
-  for (const entry of watchHistory) {
-    const listItem = listItemTemplate.content.cloneNode(true);
-    const newestDate = new Date(entry[0].time);
-    const oldestDate = new Date(entry[entry.length - 1].time);
-    const newestDateString = newestDate.toDateString();
-    const oldestDateString = oldestDate.toDateString();
-    listItem.querySelector('.newest-date').innerText = newestDateString;
-    listItem.querySelector('.oldest-date').innerText = oldestDateString;
-    list.appendChild(listItem);
-  }
+  updateList();
 }
 
 function isValid(video) {
