@@ -8,3 +8,13 @@ menuButton.addEventListener('click', () => {
     menu.style.display = 'none';
   }
 });
+
+// Have upload button open file upload on click
+const uploadButton = document.querySelector('#upload-button');
+const fileInput = document.createElement('input');
+fileInput.type = 'file';
+fileInput.accept = 'application/json';
+fileInput.multiple = true;
+uploadButton.addEventListener('click', () => {
+  fileInput.click();
+});

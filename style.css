@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=League+Gothic&display=swap');
 
 * {
@@ -10,6 +11,7 @@ body {
   flex-flow: column;
   overflow: hidden;
   background: #0f0f0f;
+  font-family: 'Roboto', Arial, sans-serif;
   color: white;
 }
 
@@ -58,5 +60,38 @@ body {
   /* menu */
 
     #menu {
-      width: 240px;
+      width: 216px;
+      padding: 12px;
+      display: flex;
+      flex-flow: column;
+      gap: 12px;
+    }
+
+    #upload-button {
+      height: 40px;
+      padding: 0 12px;
+      margin-right: 12px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-size: 14px;
+      background: none;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+    }
+
+    #upload-button:hover {
+      background: #272727;
+    }
+
+    #upload-button:active {
+      background: #3d3d3d;
+    }
+
+    #menu > hr {
+      height: 1px;
+      border: 0;
+      background: #3f3f3f;
     }
