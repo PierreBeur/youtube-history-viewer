@@ -22,13 +22,26 @@
     </header>
     <main>
       <div id="menu">
-        <button id="upload-button">
-          <svg width="24" height="24" fill="#fff">
+        <button id="upload-button" class="menu-item">
+          <svg class="menu-item-icon" width="24" height="24" fill="#fff">
             <path d="M 11,16 V 5 L 8.20711,7.7071068 7.5,7 11.5,3 15.5,7 14.7929,7.7071068 12,5 V 16 Z M 3,21 V 16 H 4 V 20 h 15 v -4 h 1 V 21 Z"></path>
           </svg>
           Upload
         </button>
         <hr>
+        <div id="list">
+          <template id="list-item-template">
+            <div class="menu-item list-item">
+              <svg class="menu-item-icon" width="24" height="24" fill="#fff">
+                <path d="M14.97,16.95L10,13.87V7h2v5.76l4.03,2.49L14.97,16.95z M22,12c0,5.51-4.49,10-10,10S2,17.51,2,12h1c0,4.96,4.04,9,9,9 s9-4.04,9-9s-4.04-9-9-9C8.81,3,5.92,4.64,4.28,7.38C4.17,7.56,4.06,7.75,3.97,7.94C3.96,7.96,3.95,7.98,3.94,8H8v1H1.96V3h1v4.74 C3,7.65,3.03,7.57,3.07,7.49C3.18,7.27,3.3,7.07,3.42,6.86C5.22,3.86,8.51,2,12,2C17.51,2,22,6.49,22,12z"></path>
+              </svg>
+              <div class="dates">
+                <div class="newest-date"></div>
+                <div class="oldest-date"></div>
+              </div>
+            </div>
+          </template>
+        </div>
       </div>
     </main>
   </body>

@@ -67,23 +67,31 @@ body {
       gap: 12px;
     }
 
-    #upload-button {
+    .menu-item {
       height: 40px;
       padding: 0 12px;
       margin-right: 12px;
       display: flex;
       align-items: center;
-      gap: 24px;
-      font-size: 14px;
+      font-size: 12px;
       background: none;
       border: none;
       border-radius: 10px;
-      color: white;
-      cursor: pointer;
+      user-select: none;
     }
 
-    #upload-button:hover {
+    .menu-item:hover {
       background: #272727;
+    }
+
+    .menu-item-icon {
+      margin-right: 24px;
+    }
+
+    #upload-button {
+      font-size: 14px;
+      color: white;
+      cursor: pointer;
     }
 
     #upload-button:active {
@@ -94,4 +102,8 @@ body {
       height: 1px;
       border: 0;
       background: #3f3f3f;
+    }
+
+    .list-item > .dates {
+      flex: 1;
     }
