@@ -1,11 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=League+Gothic&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=block');
+@import url('https://fonts.googleapis.com/css2?family=League+Gothic&display=block');
 
 * {
   margin: 0;
 }
 
 button {
+  padding: 0;
   background: none;
   border: none;
   color: white;
@@ -70,32 +71,30 @@ body {
       gap: 12px;
     }
 
-    .menu-item {
-      height: 40px;
-      padding: 0 12px;
-      margin-right: 12px;
-      display: flex;
-      align-items: center;
-      font-size: 12px;
-      border-radius: 10px;
-      user-select: none;
-    }
+    /* menu-item */
 
-    .menu-item:hover {
-      background: #272727;
-    }
+      .menu-item, .file-item {
+        height: 40px;
+        padding-left: 12px;
+        margin-right: 12px;
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        border-radius: 10px;
+        user-select: none;
+      }
 
-    .menu-item-icon {
-      margin-right: 24px;
-    }
+      .menu-item:hover, .file-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
 
-    #upload-button {
-      font-size: 14px;
-    }
+      .menu-item:active, .file-item:active {
+        background: rgba(255, 255, 255, 0.2);
+      }
 
-    #upload-button:active {
-      background: #3d3d3d;
-    }
+      .menu-item-icon, .file-item-icon {
+        margin-right: 24px;
+      }
 
     #menu > hr {
       height: 1px;
@@ -103,19 +102,44 @@ body {
       background: #3f3f3f;
     }
 
-    .list-item > .dates {
-      flex: 1;
-    }
+    /* file-item */
 
-    .list-item-delete {
-      height: 100%;
-      display: none;
-    }
+      .file-item {
+        font-size: 12px;
+        cursor: pointer;
+      }
 
-    .list-item:hover > .list-item-delete {
-      display: block;
-    }
+      .file-item-active {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        flex: 1;
+      }
 
-    .list-item-delete:hover {
-      background: #3d3d3d;
-    }
+      .active-file-item {
+        background: rgba(255, 255, 255, 0.2);
+        font-weight: 500;
+      }
+
+      .active-file-item:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .file-item-dates {
+        white-space: nowrap;
+      }
+
+      .file-item-delete {
+        height: 100%;
+        padding: 0 12px;
+        display: none;
+        border-radius: 10px;
+      }
+
+      .file-item:hover > .file-item-delete {
+        display: block;
+      }
+
+      .file-item-delete:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }

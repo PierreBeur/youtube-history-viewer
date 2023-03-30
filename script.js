@@ -1,65 +1,104 @@
-const watchHistory = [];
+let db;
+(async () => {
+  // Open database
+  db = await idb.openDB('youtube-history-viewer', 1, {
+    upgrade(db) {
+      // Create database if does not exist
+      db.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
+    }
+  });
+  updatePage();
+})();
 
-const list = document.querySelector('#list');
-const listItemTemplate = document.querySelector('#list-item-template');
-function updateList() {
-  // Clear list
-  list.textContent = '';
-  // Add entries to list
-  for (const entry of watchHistory) {
-    const listItem = listItemTemplate.content.cloneNode(true);
-    // Set dates
-    const newestDate = new Date(entry[0].time);
-    const oldestDate = new Date(entry[entry.length - 1].time);
-    const newestDateString = newestDate.toDateString();
-    const oldestDateString = oldestDate.toDateString();
-    listItem.querySelector('.newest-date').innerText = newestDateString;
-    listItem.querySelector('.oldest-date').innerText = oldestDateString;
-    // Have delete button delete entry on click
-    const deleteButton = listItem.querySelector('.list-item-delete');
-    deleteButton.addEventListener('click', () => {
-      // Get confirmation from user
-      const confirmString = `${newestDateString} - ${oldestDateString}\n` +
-                            'Are you sure you want to permanently delete this entry?';
-      if (confirm(confirmString)) {
-        // Remove entry from watch history
-        watchHistory.splice(watchHistory.indexOf(entry), 1);
-        updateList();
-      }
-    });
-    // Add entry to list
-    list.appendChild(listItem);
-  }
+const URL_PREFIX = 'https://www.youtube.com/watch?v=';
+const TITLE_PREFIX = 'Watched ';
+
+async function parseFile(text) {
+  const json = JSON.parse(text);
+  // Check that JSON is an array and has elements
+  if (!Array.isArray(json) || !json.length) return;
+  // Parse each event in file
+  const events = json.map((data) => {
+    // Parse video data
+    const id = data.titleUrl?.startsWith(URL_PREFIX) ? data.titleUrl?.slice(URL_PREFIX.length) : data.titleUrl;
+    const title = data.title?.startsWith(TITLE_PREFIX) ? data.title?.slice(TITLE_PREFIX.length) : data.title;
+    const channelName = data.subtitles?.[0]?.name;
+    const channelUrl = data.subtitles?.[0]?.url;
+    const time = Date.parse(data.time);
+    // Add event to file
+    return { id, title, channelName, channelUrl, time};
+  });
+  // Add file to database
+  const newest = events[0].time;
+  const oldest = events[events.length - 1].time;
+  await db.put('files', { newest, oldest, events, raw: json });
+  updatePage();
 }
 
-function updateWatchHistory(json) {
-  // Add entry to watch history
-  watchHistory.push(json);
-  // Sort entries by dates
-  watchHistory.sort((a, b) => {
-    aNewestDate = new Date(a[0].time);
-    aOldestDate = new Date(a[a.length - 1].time);
-    bNewestDate = new Date(b[0].time);
-    bOldestDate = new Date(b[b.length - 1].time);
-    if (aNewestDate > bNewestDate) return -1;
-    if (aNewestDate < bNewestDate) return 1;
-    if (aOldestDate > bOldestDate) return -1;
-    if (aOldestDate < bOldestDate) return 1;
+async function updatePage() {
+  await updateList();
+}
+
+const fileList = document.querySelector('#file-list');
+const fileItemTemplate = document.querySelector('#file-item-template');
+async function updateList() {
+  // Get and sort files
+  const files = await db.getAll('files');
+  files.sort((a, b) => {
+    if (a.newest > b.newest) return -1;
+    if (a.newest < b.newest) return 1;
+    if (a.oldest > b.oldest) return -1;
+    if (a.oldest < b.oldest) return 1;
     return 0;
   });
-  updateList();
-}
-
-function isValid(video) {
-  if (video.subtitles && Array.isArray(video.subtitles) && video.subtitles.length) {
-    // Valid if video has title, url, channel name and url, and time
-    const hasTitle = !!(video.title);
-    const hasUrl = !!(video.titleUrl);
-    const hasChannel = !!(video.subtitles[0].name) && !!(video.subtitles[0].url);
-    const hasTime = !!(video.time);
-    return hasTitle && hasUrl && hasChannel && hasTime;
+  // Clear list
+  fileList.textContent = '';
+  // Add files to list
+  for (const file of files) {
+    const fileItem = fileItemTemplate.content.firstElementChild.cloneNode(true);
+    // Set dates
+    const newestDate = (new Date(file.newest)).toDateString();
+    const oldestDate = (new Date(file.oldest)).toDateString();
+    fileItem.querySelector('.newest-date').innerText = newestDate;
+    fileItem.querySelector('.oldest-date').innerText = oldestDate;
+    // Set file id
+    fileItem.id = `file-${file.id}`;
+    // Get active file id
+    const activeFileId = sessionStorage.getItem('active-file-id');
+    // If this file is active or no file is active
+    if ((file.id == activeFileId) || !activeFileId) {
+      // Set file item as active
+      fileItem.classList.add('active-file-item');
+      sessionStorage.setItem('active-file-id', file.id);
+    } else {
+      // Otherwise set file as inactive
+      fileItem.classList.remove('active-file-item');
+    }
+    // Set file as active on click
+    fileItem.querySelector('.file-item-active').addEventListener('click', () => {
+      // Set active file id
+      sessionStorage.setItem('active-file-id', file.id);
+      updatePage();
+    });
+    // Have delete button delete file on click
+    const deleteButton = fileItem.querySelector('.file-item-delete');
+    deleteButton.addEventListener('click', async () => {
+      // Get confirmation from user
+      const confirmString = `${newestDate} - ${oldestDate}\n` +
+                            'Are you sure you want to permanently delete this file?';
+      if (confirm(confirmString)) {
+        // Delete file from database
+        await db.delete('files', file.id);
+        // If file is active
+        if (file.id == sessionStorage.getItem('active-file-id')) {
+          sessionStorage.removeItem('active-file-id');
+        }
+        updatePage();
+      }
+    });
+    // Add file to list
+    fileList.appendChild(fileItem);
   }
-  return false;
 }
 
 // Have menu button toggle menu display on click
@@ -84,30 +123,24 @@ uploadButton.addEventListener('click', () => {
 });
 
 // Load and parse files on upload
-fileInput.addEventListener('change', () => {
+fileInput.addEventListener('change', async () => {
   // Get array of files from file input
   const files = fileInput.files;
-  console.log(files);
   // Iterate over files
   for (const file of files) {
     // Check that file is JSON
     if (!file.type || file.type != 'application/json') continue;
-    console.log(file);
     // Load contents of file
     const reader = new FileReader();
-    reader.addEventListener('load', () => {
-      const text = reader.result;
-      const json = JSON.parse(text);
-      console.log(json);
-      // If JSON is an array and has elements
-      if (Array.isArray(json) && json.length) {
-        // Filter out invalid entries
-        const jsonValid = json.filter(isValid);
-        // Push JSON to watch history and update list
-        updateWatchHistory(jsonValid);
-      }
+    await new Promise((resolve) => {
+      reader.addEventListener('load', async () => {
+        // Parse result text and update database
+        const text = reader.result;
+        await parseFile(text);
+        resolve();
+      });
+      reader.readAsText(file);
     });
-    reader.readAsText(file);
   }
   // Reset file input
   fileInput.value = '';
