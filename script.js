@@ -37,6 +37,7 @@ async function parseFile(text) {
 
 async function updatePage() {
   await updateList();
+  await updateBrowse();
 }
 
 const fileList = document.querySelector('#file-list');
@@ -98,6 +99,40 @@ async function updateList() {
     });
     // Add file to list
     fileList.appendChild(fileItem);
+  }
+}
+
+async function getActiveFile() {
+  const fileId = Number(sessionStorage.getItem('active-file-id'));
+  return (await db.getAll('files', fileId, 1))[0] || (await db.getAll('files', null, 1))[0];
+}
+
+const browse = document.querySelector('#browse');
+const videoTemplate = document.querySelector('#video-template');
+async function updateBrowse() {
+  // Clear browse
+  browse.textContent = '';
+  // Get active file
+  const file = await getActiveFile();
+  const events = file?.events || [];
+  // Add events to browse
+  for (const event of events) {
+    // Create new video element from template
+    const video = videoTemplate.content.cloneNode(true);
+    const anchor = video.querySelector('a');
+    const thumbnail = anchor.querySelector('.thumbnail');
+    const title = anchor.querySelector('.title');
+    const channel = video.querySelector('.channel');
+    // Set video data
+    anchor.href = `https://youtu.be/${event.id}`;
+    thumbnail.src = `https://i.ytimg.com/vi/${event.id}/hqdefault.jpg`;
+    thumbnail.width = 210;
+    thumbnail.height = 118;
+    title.textContent = event.title;
+    channel.href = event.channelUrl;
+    channel.textContent = event.channelName;
+    // Append video to browse
+    browse.appendChild(video);
   }
 }
 

@@ -143,3 +143,50 @@ body {
       .file-item-delete:hover {
         background: rgba(255, 255, 255, 0.1);
       }
+
+  /* browse */
+
+    #browse {
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 210px);
+      flex: 1;
+      justify-content: center;
+      gap: 24px 4px;
+    }
+
+    /* video */
+
+      .video {
+        width: 210px;
+      }
+
+      .thumbnail {
+        object-fit: cover;
+      }
+
+      a {
+        text-decoration: none;
+        color: white;
+      }
+
+      .title {
+        display: block;
+        font-size: 14px;
+        line-height: 20px;
+        font-weight: 500;
+      }
+
+      .channel {
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 20px;
+        color: #aaaaaa;
+      }
+
+      .channel:hover {
+        color: white;
+      }
