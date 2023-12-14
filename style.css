@@ -39,12 +39,68 @@ body {
   }
 
   #title {
-    flex: 1;
+    width: 150px;
     font-family: 'League Gothic', Arial, sans-serif;
     font-size: 24px;
     font-weight: 400;
     user-select: none;
   }
+
+  /* search */
+
+    #search {
+      flex: 1;
+      padding-right: 150px;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 1130px) {
+      #title {
+        display: none;
+      }
+
+      #search {
+        padding: 0;
+      }
+    }
+
+    #search > input {
+      width: 0;
+      height: 38px;
+      padding: 0 4px 0 16px;
+      flex: 1;
+      max-width: 550px;
+      background-color: #121212;
+      border: 1px solid #303030;
+      border-radius: 20px 0 0 20px;
+      outline: none;
+      font-size: 16px;
+      font-weight: 400;
+      color: white;
+    }
+
+    #search > input::placeholder {
+      font-family: 'Roboto', Arial, sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    #search > input:focus {
+      border-color: #1c62b9;
+    }
+
+    #search > button {
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      background-color: #222222;
+      border: 1px solid #303030;
+      border-left: none;
+      border-radius: 0 20px 20px 0;
+      color: white;
+      cursor: pointer;
+    }
 
   #github {
     height: 100%;
@@ -149,7 +205,6 @@ body {
     #browse {
       height: 100%;
       overflow-y: auto;
-      overflow-x: hidden;
       padding: 0 24px;
       display: grid;
       grid-template-columns: repeat(auto-fill, 210px);
